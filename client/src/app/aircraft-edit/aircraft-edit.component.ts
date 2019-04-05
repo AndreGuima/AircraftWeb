@@ -1,15 +1,64 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AircraftService } from '../shared/aircraft/aircraft.service';
+import { GiphyService } from '../shared/giphy/giphy.service';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-aircraft-edit',
   templateUrl: './aircraft-edit.component.html',
   styleUrls: ['./aircraft-edit.component.css']
 })
-export class AircraftEditComponent implements OnInit {
+export class AircraftEditComponent implements OnInit, OnDestroy {
 
-  constructor() { }
+  aircraft: any = {};
+
+  sub: Subscription;
+
+  constructor(private route: ActivatedRoute,
+    private router: Router,
+    private aircraftService: AircraftService,
+    private giphyService: GiphyService) {
+
+  }
 
   ngOnInit() {
+    this.sub = this.route.params.subscribe(params => {
+      const id = params['id'];
+      if (id) {
+        this.aircraftService.get(id).subscribe((aircraft: any) => {
+          if (aircraft) {
+            this.aircraft = aircraft;
+            this.aircraft.href = aircraft.href;
+            this.giphyService.get(aircraft.name).subscribe(url => aircraft.giphyUrl = url);
+          } else {
+            console.log(`Aircraft with id '${id}' not found, returning to list`);
+            this.gotoList();
+          }
+        })
+      }
+    })
+  }
+
+  ngOnDestroy() {
+    this.sub.unsubscribe();
+  }
+
+  gotoList() {
+    this.router.navigate(['/aircraft-list']);
+  }
+
+  save(form: NgForm) {
+    this.aircraftService.save(form).subscribe(result => {
+      this.gotoList();
+    }, error => console.error(error));
+  }
+
+  remove(href) {
+    this.aircraftService.remove(href).subscribe(result => {
+      this.gotoList();
+    }, error => console.error(error));
   }
 
 }
