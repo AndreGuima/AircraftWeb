@@ -4,8 +4,12 @@
     <mat-list>
       <mat-list-item *ngFor="let aircraft of aircrafts">
         <img mat-list-avatar src="{{aircraft.giphyUrl}}" alt="{{aircraft.name}}">
-        <h3 mat-line>{{aircraft.name}}</h3>
+        <h3 mat-line>
+          <a mat-button [routerLink]="['/aircraft-edit', aircraft.id]">{{aircraft.name}}</a>
+        </h3>
       </mat-list-item>
     </mat-list>
   </mat-card-content>
+
+  <button mat-fab color="primary" [routerLink]="['/aircraft-add']">Add</button>
 </mat-card>
