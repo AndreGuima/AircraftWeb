@@ -1,14 +1,55 @@
 <mat-card>
   <mat-card-title>Aircraft List</mat-card-title>
   <mat-card-content>
-    <mat-list>
-      <mat-list-item *ngFor="let aircraft of aircrafts">
-        <img mat-list-avatar src="{{aircraft.giphyUrl}}" alt="{{aircraft.name}}">
-        <h3 mat-line>
-          <a mat-button [routerLink]="['/aircraft-edit', aircraft.id]">{{aircraft.name}}</a>
-        </h3>
-      </mat-list-item>
-    </mat-list>
+
+    <mat-table #table [dataSource]="aircrafts">
+
+      <ng-container matColumnDef="id">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Id </mat-header-cell>
+        <mat-cell *matCellDef="let aircraft"> {{aircraft.id}} 
+            <a fxFlexFill [routerLink]="['/aircraft-edit', aircraft.id]" class="mat-row-link"></a>
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
+        <mat-cell *matCellDef="let aircraft"> {{aircraft.name}} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="serialNumber">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Serial Number </mat-header-cell>
+        <mat-cell *matCellDef="let aircraft"> {{aircraft.serialNumber}} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="un">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Un </mat-header-cell>
+        <mat-cell *matCellDef="let aircraft"> {{aircraft.un}} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="capacity">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Capacity </mat-header-cell>
+        <mat-cell *matCellDef="let aircraft"> {{aircraft.capacity}} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="weight">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Weight </mat-header-cell>
+        <mat-cell *matCellDef="let aircraft"> {{aircraft.weight}} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="manufactureDate">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Manufacture Date </mat-header-cell>
+          <mat-cell *matCellDef="let aircraft"> {{aircraft.manufactureDate | date}} </mat-cell>
+        </ng-container>
+
+      <ng-container matColumnDef="symbol">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Symbol </mat-header-cell>
+        <mat-cell *matCellDef="let aircraft"> <img [src]="aircraft.giphyUrl" height="42" width="42"
+            alt="aircraft.name" /> </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
   </mat-card-content>
 
   <button mat-fab color="primary" [routerLink]="['/aircraft-add']">Add</button>

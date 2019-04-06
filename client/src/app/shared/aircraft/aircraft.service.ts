@@ -4,10 +4,9 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AircraftService {
-  public API = '//localhost:8080';
-  public AIRCRAFT_API = this.API + '/aircrafts';
+  public AIRCRAFT_API = '//localhost:8080/aircrafts';
 
-  constructor(private http: HttpClient) { 
+  constructor(private http: HttpClient) {
   }
 
   getAll(): Observable<any> {
@@ -20,15 +19,18 @@ export class AircraftService {
 
   save(aircraft: any): Observable<any> {
     let result: Observable<Object>;
-    if (aircraft['href']) {
-      result = this.http.put(aircraft.href, aircraft);
+
+    if (aircraft['id']) {
+      result = this.http.put(this.AIRCRAFT_API + '/' + aircraft.id, aircraft);
     } else {
       result = this.http.post(this.AIRCRAFT_API, aircraft);
     }
     return result;
   }
 
-  remove(href: string) {
-    return this.http.delete(href);
+  remove(id: number) {
+    const url = `${this.AIRCRAFT_API}/${id}`;
+    return this.http.delete(url);
   }
+
 }
